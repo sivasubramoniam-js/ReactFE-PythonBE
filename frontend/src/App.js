@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Grid } from '@mui/material';
+import Header from './Header';
+import YouTubeSearch from './YT';
+import Chat from './Chat';
+import Assistant from './Assistant';
+import "./App.css"
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Header />
+      <Grid container className="main" padding={2}>
+        <Grid item style={{height: "100%"}} xs={12} sm={12} md={3.5}>
+          <YouTubeSearch />
+        </Grid>
+        <Grid item xs={12} sm={12} md={5}>
+          <Chat />
+        </Grid>
+        <Grid item xs={12} sm={12} md={3.5} height="100%">
+          <Assistant />
+        </Grid>
+      </Grid>
     </div>
   );
 }
