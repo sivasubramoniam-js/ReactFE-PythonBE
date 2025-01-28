@@ -6,6 +6,7 @@ const chatSlice = createSlice({
   initialState: {
     messages: [],
     inputMessage: '',
+    option: '',
   },
   reducers: {
     addMessage: (state, action) => {
@@ -17,8 +18,11 @@ const chatSlice = createSlice({
     clearInputMessage: (state) => {
       state.inputMessage = '';
     },
+    setOptionValue: (state, action) => {
+      state.option = action.payload;
+    }
   },
 });
 
-export const { addMessage, setInputMessage, clearInputMessage } = chatSlice.actions;
+export const { addMessage, setInputMessage, clearInputMessage, setOptionValue } = chatSlice.actions;
 export default chatSlice.reducer;

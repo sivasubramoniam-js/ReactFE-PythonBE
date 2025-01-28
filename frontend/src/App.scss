@@ -1,0 +1,54 @@
+.tw-auto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.main {
+  display: flex;
+  height: calc(100vh - 75px);
+  overflow: hidden;
+}
+
+.app {
+  background: linear-gradient(110deg, rgb(7 28 79) 0%, #009688 100%);
+}
+
+.styled-color {
+  background: linear-gradient(81.02deg, rgb(255 24 39) -23.49%, rgb(255 232 93) 45.66%, rgb(8 207 255) 114.8%) text;
+  color: transparent;
+}
+
+.shadow {
+  filter: drop-shadow(black 2px 4px 6px);
+}
+
+.suggestions {
+  height:  14px;
+}
+
+.suggestions::before {
+  content: "Try this prompt : ";
+}
+
+.suggestions::after {
+  animation: suggestionAnimation 20s ease-in-out infinite;
+  animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  content: "";
+}
+
+@keyframes suggestionAnimation {
+  0% {
+    content: "Summarize in 100 words";
+  }
+  33% {
+    content: "Write a brief description on this topic";
+  }
+  66% {
+    content: "Explain this content to a 5 year old kid";
+  }
+  100% {
+    content: "is this recommended for studies ?";
+  }
+}

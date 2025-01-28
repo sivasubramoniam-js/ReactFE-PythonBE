@@ -1,20 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Create a slice of state
 const dataSlice = createSlice({
   name: 'data',
   initialState: {
     list: [],
     id: [],
+    complete_list: []
   },
   reducers: {
     updateChildData: (state, action) => {
       const { data, id } = action.payload;
       const updatedId = state.id.push(id);
       const updatedList = state.list.push(data);
+      const updatedCompleteList = state.complete_list.push(data);
       state = {
         list: updatedList,
-        id: updatedId
+        id: updatedId,
+        complete_list: updatedCompleteList
       }
     },
     removeChildData: (state, action) => {
@@ -26,6 +28,5 @@ const dataSlice = createSlice({
   }
 });
 
-// Export actions and reducer
 export const { updateChildData, removeChildData } = dataSlice.actions;
 export default dataSlice.reducer;

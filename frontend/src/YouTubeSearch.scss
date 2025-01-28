@@ -1,0 +1,117 @@
+.youtube-search-container {
+  background: #ffffff21;
+  color: white;
+  height: 100%;
+  padding: 0;
+  max-width: xs;
+
+  .youtube-search-title {
+    color: white;
+  }
+
+  .youtube-search-input {
+    margin-bottom: 10px;
+    padding-right: 0;
+    color: white;
+  }
+
+  .youtube-search-results {
+    height: calc(100vh - 260px);
+    overflow: auto;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .card-item {
+    width: 100%;
+  }
+
+  .card-item-card {
+    background-color: #fdfdfd08;
+    color: white;
+  }
+
+  .card-item-container {
+    display: flex;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .card-item-thumbnail-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+
+  .card-item-thumbnail {
+    width: 100px;
+    height: 100px;
+  }
+
+  .card-item-link {
+    text-decoration: none;
+    color: unset;
+  }
+
+  .card-item-watch-container {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .card-item-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .card-item-title {
+    width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .card-item-channel {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 15px 0;
+  }
+
+  .card-item-avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .card-item-channel-name {
+    margin: 0;
+  }
+
+  .card-item-stats {
+    display: flex;
+    gap: 40px;
+    padding-bottom: 10px;
+  }
+
+  .card-item-stat {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .card-item-add-to-list {
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .card-item-add-to-list-container {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+}
