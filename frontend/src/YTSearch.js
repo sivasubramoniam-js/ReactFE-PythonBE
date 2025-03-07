@@ -24,7 +24,7 @@ function YTSearch() {
   };
 
   const getResults = () => {
-    axios.get(`http://127.0.0.1:5000/searchVideo?keyword=${keyword}`).then((res) => {
+    axios.get(`/searchVideo?keyword=${keyword}`).then((res) => {
         setResults([...res.data.result])
     })
   }

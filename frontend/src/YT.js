@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Container, Grid, TextField, IconButton, Card, CardMedia, CardContent, Button, Typography, Paper } from '@mui/material';
+import { Container, Grid, TextField, IconButton, Card, CardMedia, CardContent, Button, Typography, Paper, Box, Avatar, Tooltip, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
+import { Visibility as VisibilityIcon, AccessTime as AccessTimeIcon } from '@mui/icons-material';
+import QueueIcon from '@mui/icons-material/Queue';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import axios from "axios";
 import { useDispatch } from 'react-redux';
@@ -9,6 +10,76 @@ import { updateChildData } from './slice';
 import { useSelector } from 'react-redux';
 import Snackbar from '@mui/material/Snackbar';
 import { Alert } from '@mui/material';
+
+const CssTextField = styled(TextField)({
+    color: "white",
+    '& label.Mui-focused': {
+      color: 'unset',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: 'white',
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'white',
+      },
+      '&:hover fieldset': {
+        borderColor: 'white',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'white',
+        borderWidth: "1px",
+      },
+    },
+  });
+
+export const CardItem = ({item, handleChange}) => (
+    <Grid key={item.id} marginY="10px" width="100%">
+        <Card sx={{backgroundColor: "#fdfdfd08", color: "white"}}>
+            <Box display="flex" padding="10px" gap="10px">
+                <Box display="flex" flexDirection="column" justifyContent="space-evenly" alignItems="center">
+                    <img src={item.thumbnail} alt={item.title} style={{ width: "100px", height: "100px" }} />
+                    <a href={item.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: "unset" }}>
+                        <Box display="flex" gap="5px" alignItems="center">
+                            <PlayArrowIcon />
+                            <Typography variant="body2">Watch</Typography>
+                        </Box>
+                    </a>
+                </Box>
+                <Box>
+                <Tooltip title={item.title} placement='bottom-start'>
+                    <Typography
+                        noWrap
+                        sx={{ width: "220px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "pointer" }}
+                    >
+                        {item.title}
+                    </Typography>
+                </Tooltip>
+                <Box display="flex" gap="10px" padding="15px 0" alignItems="center">
+                    <Avatar src={item.channel_thumbnail} sx={{ width: 30, height: 30 }} />
+                    <Typography variant="body2" sx={{ margin: 0 }}>{item.channel_name}</Typography>
+                </Box>
+                <Box display="flex" flexWrap="wrap" gap="40px" paddingBottom="10px">
+                    <Box display="flex" gap="5px" alignItems="center">
+                        <VisibilityIcon />
+                        <Typography variant="body2">{item.views}</Typography>
+                    </Box>
+                    <Box display="flex" gap="5px" alignItems="center">
+                        <AccessTimeIcon />
+                        <Typography variant="body2">{item.duration}</Typography>
+                    </Box>
+                </Box>
+                <Box  display="flex" justifyContent="center">
+                    <Box display="flex" gap="5px" sx={{cursor: "pointer"}} onClick={() => handleChange(item.id, item)}>
+                        <QueueIcon /> {/* Replace with your Add to List icon */}
+                        <Typography variant="body2">Add to List</Typography>
+                    </Box>
+                </Box>
+                </Box>
+            </Box>
+        </Card>
+    </Grid>
+)
 
 const YouTubeSearch = () => {
     const [keyword, setKeyword] = useState('');
@@ -26,8 +97,14 @@ const YouTubeSearch = () => {
         }
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            getResults();
+        }
+    }
+
     const getResults = () => {
-        axios.get(`http://127.0.0.1:5000/searchVideo?keyword=${keyword}`).then((res) => {
+        axios.get(`/searchVideo?keyword=${keyword}`).then((res) => {
             setResults([...res.data.result])
         })
     }
@@ -38,84 +115,45 @@ const YouTubeSearch = () => {
             sx={{ 
                 bgcolor: 'gray', 
                 color: 'white',
-                height: "100%", 
-                overflowY: 'auto'
+                height: "100%",
+                background: "#ffffff21",
             }}
+            style={{ padding: 0}}
             maxWidth="xs"
         >
-            <Grid item container xs={12} sx={{ backgroundColor: 'gray'}} pt={1} position='sticky' zIndex={9} top={0} alignItems="center">
-                <Typography variant="h6" gutterBottom>
+            <Grid item container xs={12} pt={3} px={4} alignItems="center">
+                <Typography variant="h6" gutterBottom className='styled-color' >
                     YouTube Search
                 </Typography>
-                <TextField
+                <CssTextField
                     fullWidth
                     variant="outlined"
                     placeholder="Enter keyword here"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                    onEnter
                     InputProps={{
                         endAdornment: (
                             <IconButton onClick={getResults} color="inherit">
                                 <SearchIcon />
                             </IconButton>
                         ),
-                        style: {paddingRight: 0}
+                        style: {paddingRight: 0, color: "white"}
                     }}
-                    style={{ marginBottom: "10px"}}
+                    style={{ marginBottom: "10px" }}
                 />
             </Grid>
-            <Grid item container xs={12} overflow='auto' spacing={2} margin={0} marginY={1} width="100%">
+            <Grid item style={{ height: 'calc(100vh - 260px)', overflow: 'auto'}} px={4} container xs={12} overflow='auto' spacing={2} margin={0} marginY={1} width="100%">
                 {results && results.map((item) => (
-                    <Grid key={item.id} marginY="10px" width="100%">
-                        <Card sx={{ bgcolor: 'brown', borderRadius: 5, padding: 0, width: "100%" }}>
-                            <CardMedia
-                                style={{padding: "0"}}
-                                component="img"
-                                alt={item.title}
-                                image={item.thumbnail}
-                                sx={{ borderRadius: '15px 15px 0 0', aspectRatio: '16/9', height: 'auto' }}
-                            />
-                            <CardContent>
-                                <Typography
-                                    variant="subtitle2"
-                                    noWrap
-                                    sx={{ textAlign: 'center', mb: 1 }}
-                                >
-                                    {item.title}
-                                </Typography>
-                                <Grid container spacing={1} justifyContent="center">
-                                    <Grid item>
-                                        <Button
-                                            variant="outlined"
-                                            color="inherit"
-                                            startIcon={<AddIcon />}
-                                            onClick={() => handleChange(item.id, item)}
-                                        >
-                                            Add to list
-                                        </Button>
-                                    </Grid>
-                                    <Grid item>
-                                        <Button
-                                            variant="outlined"
-                                            color="inherit"
-                                            startIcon={<PlayArrowIcon />}
-                                            href={item.link}
-                                            target="_blank"
-                                        >
-                                            Play
-                                        </Button>
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                    </Grid>
+                    <CardItem item={item} handleChange={handleChange} />
                 ))}
             </Grid>
             <Snackbar
-                anchorOrigin={{ vertical:"top", horizontal:"center" }}
+                anchorOrigin={{ vertical:"top", horizontal:"right" }}
                 open={showSnack}
                 onClose={() => setShowSnack(false)}
-                autoHideDuration={1000}
+                autoHideDuration={2000}
             >
                 <Alert
                     onClose={() => setShowSnack(false)}
