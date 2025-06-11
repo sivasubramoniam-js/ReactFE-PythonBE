@@ -1,0 +1,8 @@
+httpx<0.28
+youtube-transcript-api 
+youtube-search-python
+python-dotenv
+google-generativeai
+flask
+flask-cors
+yt-dlp

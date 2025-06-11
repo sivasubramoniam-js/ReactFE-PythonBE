@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background: white;
 }
 
 .App-logo {
@@ -35,4 +36,11 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.styled-text {
+  color: transparent !important;
+  background: url("https://t3.ftcdn.net/jpg/04/26/25/78/360_F_426257895_zXR9mG3MFiDZdgecONRYCHRV4IfukJea.jpg") !important;
+  background-clip: text !important;
+  background-position-x:20% !important;
 }

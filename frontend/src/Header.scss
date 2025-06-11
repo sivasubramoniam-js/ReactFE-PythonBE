@@ -1,0 +1,22 @@
+.header {
+    border-bottom: 1px solid #80808070;
+    &-title {
+        color: transparent;
+        background: url(https://t3.ftcdn.net/jpg/04/26/25/78/360_F_426257895_zXR9mG3MFiDZdgecONRYCHRV4IfukJea.jpg);
+        background-clip: text;
+        background-position-x:20% ;
+        // animation: anim 10s linear infinite;
+    }
+    // @keyframes anim {
+    //     0% {
+    //         background-position-x: 0;
+    //     }
+    //     50% {
+    //         background-position-x: 100%;
+    //     }
+    //     100% {
+    //         background-position-x: 0%;
+    //     }
+        
+    // }
+}

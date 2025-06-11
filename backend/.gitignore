@@ -13,6 +13,8 @@
 
 # misc
 .env
+__pycache__
+myenv
 .DS_Store
 .env.local
 .env.development.local
