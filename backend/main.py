@@ -16,7 +16,7 @@ generation_config = genai.types.GenerationConfig(
     max_output_tokens=None,
     temperature=1.0,
 )
-text_model = genai.GenerativeModel('gemini-pro', generation_config=generation_config)
+text_model = genai.GenerativeModel('gemini-1.5-flash', generation_config=generation_config)
 
 @app.route('/')
 def index():

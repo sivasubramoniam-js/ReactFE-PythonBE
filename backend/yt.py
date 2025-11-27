@@ -42,48 +42,64 @@ def get_english_subtitles(video_id):
         conn = sqlite3.connect("yt.db")
         cursor_read = conn.cursor()
         # Query the table
+        cursor_read.execute("CREATE TABLE IF NOT EXISTS yt_assistant (video_id TEXT PRIMARY KEY, subtitle_with_duration TEXT, subtitle TEXT)")
+        
         query = f"SELECT * FROM yt_assistant WHERE video_id = '{video_id}'"
         cursor_read.execute(query)
         row = cursor_read.fetchone()
-        columns = [desc[0] for desc in cursor_read.description]
-        subtitles_text = ""
-        subtitles_text_with_duration = ""
-        subtitles_text_index = columns.index("subtitle")
-        subtitles_text_with_duration_index = columns.index("subtitle_with_duration")
-
+        print(f"Row: {row}")
         if not row:
+            print(f"Fetching subtitles for video ID: {video_id}")
             transcript = None
             transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
-            for transcript_list_item in transcript_list:
-                transcript_lang_code = transcript_list_item.language_code
-                if transcript_lang_code != 'en':
-                    for lang_obj in transcript_list_item.translation_languages:
-                        if lang_obj["language_code"] == 'en' and transcript_list_item.is_translatable == True:
+            transcript = None
+            subtitles_text = ""
+            subtitles_text_with_duration = ""
+            # Try to find an English transcript directly
+            try:
+                transcript = transcript_list.find_transcript(['en']).fetch()
+                print("Transcript fetched in 'en' language")
+            except Exception:
+                # If not available, try to translate another transcript to English
+                for transcript_list_item in transcript_list:
+                    if transcript_list_item.is_translatable:
+                        try:
                             transcript = transcript_list_item.translate('en').fetch()
+                            print(f"Transcript translated from {transcript_list_item.language_code} to 'en'")
                             break
-                else:
-                    transcript = transcript_list_item.fetch()
-            
+                        except Exception:
+                            continue
+            if transcript is None:
+                raise Exception("No English or translatable transcript found.")
+            print("trans ready")
             for entry in transcript:
-                start_time = entry['start']
-                duration = entry['duration']
-                text = entry['text']
+                print(f"Entry: {entry.start} - {entry.duration} - {entry.text}")
+                start_time = entry.start
+                duration = entry.duration
+                text = entry.text
                 
                 # Format the subtitle entry as plain text
                 subtitles_text += text + " "
                 subtitles_text_with_duration += f"[{start_time:.2f} - {start_time + duration:.2f}] {text}\n"
-
+            print("inserting.....")
             query = "INSERT INTO yt_assistant (subtitle_with_duration, subtitle, video_id) VALUES (?,?,?)"
             cursor = conn.cursor()
             cursor.execute(query, (subtitles_text_with_duration, subtitles_text, video_id,))
             conn.commit()
             cursor.close()
         else:
+            print(f"Subtitles already fetched for video ID: {video_id}")
+            columns = [desc[0] for desc in cursor_read.description]
+            subtitles_text = ""
+            subtitles_text_with_duration = ""
+            subtitles_text_index = columns.index("subtitle")
+            subtitles_text_with_duration_index = columns.index("subtitle_with_duration")
             subtitles_text = row[subtitles_text_index]
             subtitles_text_with_duration = row[subtitles_text_with_duration_index]
         return subtitles_text, subtitles_text_with_duration
     
-    except Exception:
+    except Exception as e:
+        print(f"Error fetching subtitles for video ID {video_id}: {e}")
         return None
 
 
