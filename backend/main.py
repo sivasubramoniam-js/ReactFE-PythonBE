@@ -5,7 +5,7 @@ from io import BytesIO
 from PIL import Image
 import base64
 import requests
-genai.configure(api_key='AIzaSyDhdMfC87MEU-DCfiG2zQLXmQTh7KtH_nA')
+genai.configure(api_key='API_KEY')
 model = genai.GenerativeModel('gemini-pro-vision')
 
 app = Flask(__name__,template_folder='../frontend/build',static_folder='../frontend/build/static')
