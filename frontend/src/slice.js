@@ -10,14 +10,9 @@ const dataSlice = createSlice({
   reducers: {
     updateChildData: (state, action) => {
       const { data, id } = action.payload;
-      const updatedId = state.id.push(id);
-      const updatedList = state.list.push(data);
-      const updatedCompleteList = state.complete_list.push(data);
-      state = {
-        list: updatedList,
-        id: updatedId,
-        complete_list: updatedCompleteList
-      }
+      state.id.push(id);
+      state.list.push(data);
+      state.complete_list.push(data);
     },
     removeChildData: (state, action) => {
       const { updatedList, updatedIndex } = action.payload;

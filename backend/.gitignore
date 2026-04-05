@@ -5,3 +5,5 @@ __pycache__
 *.jpg
 *.pdf
 *.txt
+temp_audio/
+test.m4a

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { Container, Grid, TextField, IconButton, Card, CardMedia, CardContent, Button, Typography, Paper, Box, Avatar, Tooltip, styled } from '@mui/material';
+import React, { useState, useRef } from 'react';
+import { Container, Grid, TextField, IconButton, Card, CardMedia, CardContent, Button, Typography, Paper, Box, Avatar, Tooltip, styled, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Visibility as VisibilityIcon, AccessTime as AccessTimeIcon } from '@mui/icons-material';
 import QueueIcon from '@mui/icons-material/Queue';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { Link } from 'react-router-dom';
+import TrophyIcon from '@mui/icons-material/EmojiEvents';
 import axios from "axios";
 import { useDispatch } from 'react-redux';
 import { updateChildData } from './slice';
@@ -50,7 +52,14 @@ export const CardItem = ({item, handleChange}) => (
                 <Tooltip title={item.title} placement='bottom-start'>
                     <Typography
                         noWrap
-                        sx={{ width: "220px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "pointer" }}
+                        sx={{ 
+                            width: "auto", 
+                            maxWidth: { xs: "180px", sm: "220px", md: "100%" }, 
+                            overflow: "hidden", 
+                            textOverflow: "ellipsis", 
+                            whiteSpace: "nowrap", 
+                            cursor: "pointer" 
+                        }}
                     >
                         {item.title}
                     </Typography>
@@ -69,11 +78,17 @@ export const CardItem = ({item, handleChange}) => (
                         <Typography variant="body2">{item.duration}</Typography>
                     </Box>
                 </Box>
-                <Box  display="flex" justifyContent="center">
-                    <Box display="flex" gap="5px" sx={{cursor: "pointer"}} onClick={() => handleChange(item.id, item)}>
-                        <QueueIcon /> {/* Replace with your Add to List icon */}
+                <Box  display="flex" justifyContent="space-between" mt={1}>
+                    <Box display="flex" gap="5px" sx={{cursor: "pointer", color: '#00e5ff'}} onClick={() => handleChange(item.id, item)}>
+                        <QueueIcon fontSize="small" />
                         <Typography variant="body2">Add to List</Typography>
                     </Box>
+                    <Link to={`/quiz/${item.id}`} style={{ textDecoration: 'none' }}>
+                        <Box display="flex" gap="5px" sx={{cursor: "pointer", color: '#ffea00'}}>
+                            <TrophyIcon fontSize="small" />
+                            <Typography variant="body2">Take Quiz</Typography>
+                        </Box>
+                    </Link>
                 </Box>
                 </Box>
             </Box>
@@ -84,7 +99,9 @@ export const CardItem = ({item, handleChange}) => (
 const YouTubeSearch = () => {
     const [keyword, setKeyword] = useState('');
     const [results, setResults] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [showSnack, setShowSnack] = useState(false)
+    const resultsRef = useRef(null);
     const globalData = useSelector(state => state.data);
 
     const dispatch = useDispatch();
@@ -104,9 +121,17 @@ const YouTubeSearch = () => {
     }
 
     const getResults = () => {
+        if (!keyword.trim()) return;
+        setLoading(true);
         axios.get(`/searchVideo?keyword=${keyword}`).then((res) => {
-            setResults([...res.data.result])
-        })
+            setResults([...res.data.result]);
+            setLoading(false);
+            if (resultsRef.current) {
+                resultsRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }).catch(() => {
+            setLoading(false);
+        });
     }
 
     return (
@@ -117,9 +142,9 @@ const YouTubeSearch = () => {
                 color: 'white',
                 height: "100%",
                 background: "#ffffff21",
+                maxWidth: "none !important",
+                padding: "0 !important"
             }}
-            style={{ padding: 0}}
-            maxWidth="xs"
         >
             <Grid item container xs={12} pt={3} px={4} alignItems="center">
                 <Typography variant="h6" gutterBottom className='styled-color' >
@@ -144,10 +169,27 @@ const YouTubeSearch = () => {
                     style={{ marginBottom: "10px" }}
                 />
             </Grid>
-            <Grid item style={{ height: 'calc(100vh - 260px)', overflow: 'auto'}} px={4} container xs={12} overflow='auto' spacing={2} margin={0} marginY={1} width="100%">
-                {results && results.map((item) => (
-                    <CardItem item={item} handleChange={handleChange} />
-                ))}
+            <Grid 
+                item 
+                ref={resultsRef}
+                sx={{ height: { xs: '300px', md: 'calc(100vh - 260px)' }, overflow: 'auto'}} 
+                px={4} 
+                container 
+                xs={12} 
+                spacing={2} 
+                margin={0} 
+                marginY={1} 
+                width="100%"
+            >
+                {loading ? (
+                    <Box display="flex" justifyContent="center" alignItems="center" width="100%" height="200px">
+                        <CircularProgress sx={{ color: 'white' }} />
+                    </Box>
+                ) : (
+                    results && results.map((item) => (
+                        <CardItem item={item} handleChange={handleChange} />
+                    ))
+                )}
             </Grid>
             <Snackbar
                 anchorOrigin={{ vertical:"top", horizontal:"right" }}

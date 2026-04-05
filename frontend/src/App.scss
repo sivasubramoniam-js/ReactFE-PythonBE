@@ -9,10 +9,16 @@
   display: flex;
   height: calc(100vh - 75px);
   overflow: hidden;
+
+  @media (max-width: 900px) {
+    height: auto;
+    overflow: visible;
+  }
 }
 
 .app {
   background: linear-gradient(110deg, rgb(7 28 79) 0%, #009688 100%);
+  min-height: 100vh;
 }
 
 .styled-color {
