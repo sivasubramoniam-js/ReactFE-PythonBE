@@ -7,7 +7,7 @@ import TripPlanner from './pages/TripPlanner';
 import TripView from './pages/TripView';
 import './App.css';
 
-const MAPS_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyAHRN8CJPiWGwu9CfSvQcvflP6TOxjI1HU';
+const MAPS_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '';
 const API = process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:5000';
 
 export const AppContext = React.createContext({ mapsKey: '', api: '', sessionId: '' });
