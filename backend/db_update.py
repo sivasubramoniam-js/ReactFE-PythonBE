@@ -3,26 +3,9 @@ import os
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "comiccrafter.db")
 
-def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
-
 def init_db():
-    conn = get_db()
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-
-    c.execute("""
-    CREATE TABLE IF NOT EXISTS comics (
-        comic_id TEXT PRIMARY KEY,
-        title TEXT NOT NULL,
-        author TEXT,
-        canvas_json TEXT,
-        preview_base64 TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    """)
-
     c.execute("""
     CREATE TABLE IF NOT EXISTS characters (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,10 +23,8 @@ def init_db():
         UNIQUE(name, gender, body, hair, accessory, skin_color, clothing_color)
     )
     """)
-
     conn.commit()
     conn.close()
-    print("✅ ComicCrafter database initialized!")
 
 if __name__ == "__main__":
     init_db()
